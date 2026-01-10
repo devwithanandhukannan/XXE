@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Internal DTD Example</title>
+</head>
+<body>
+
+<h2>Send XML with Internal DTD</h2>
+<p>without validation cannot show any error in this response . so all the answer are always same</p>
+<button onclick="openInternalDTD()">Send Internal DTD XML</button>
+<button onclick="openExternalDTD()">Send External DTD XML</button>
+<button onclick="openExternalPublicLinkDTD()">send External public dtd</button>
+<pre id="output"></pre>
+
+<script>
+function openInternalDTD() {
+    const xmlRequest = `
+<?xml version="1.0"?>
+<!DOCTYPE request [
+    <!ELEMENT request (action, userId)>
+    <!ELEMENT action (#PCDATA)>
+    <!ELEMENT userId (#PCDATA)>
+]>
+<request>
+    <action>fetchUser</action>
+    <userId>101</userId>
+</request>
+`;
+
+    fetch("/api/dtd", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/xml"
+        },
+        body: xmlRequest
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("output").textContent = data;
+    });
+}
+
+function openExternalDTD(){
+    fetch("/api/external_dtd",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/xml"
+        },
+    }).then(res => res.text())
+    .then(data=>{
+        document.getElementById("output").textContent = data;
+    })
+}
+
+function openExternalPublicLinkDTD() {
+    fetch("/api/public_external_dtd", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/xml"
+        },
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("output").textContent = data;
+    });
+}
+</script>
+
+</body>
+</html>
