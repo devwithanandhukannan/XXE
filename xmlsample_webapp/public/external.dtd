@@ -1,3 +1,0 @@
-<!ELEMENT request (action)>
-<!ELEMENT action (#PCDATA)>
-<!ELEMENT userId (#PCDATA)>

